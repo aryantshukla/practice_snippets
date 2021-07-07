@@ -1,0 +1,322 @@
+let arr = [1,2,3,4,5]
+arr.x = -11
+
+for(let i of arr){
+  console.log(i)
+}
+arr[Symbol.iterator] = function(){
+  return {
+    current: 0,
+    last: this.length,
+    next(){
+      if(this.current==this.last){
+        this.current = -1
+        return {done:false,value:arr['x']}
+      }
+      if(this.current<this.last && this.current!=-1)return {done:false,value:arr[this.current++]}
+      return{done:true}
+
+    }
+
+  }
+}
+for(let i of arr){
+  console.log(i)
+}
+
+//call apply
+//hard bound
+//normal call
+//arrow function
+/* 
+const obj = {
+  addr:2,
+  sum:function(b){
+    setTimeout(()=>console.log(this),100)
+    return this.addr+b;
+  }
+}
+//sum = obj.sum.bind(obj)
+
+function wrapper(func){
+  //console.log(this)
+  
+  return function(a){
+     console.log(this)
+      return func.call(this,a)
+  }
+}
+obj.sum(2) 
+
+curry = wrapper.call(obj,obj.sum)
+console.log(curry(2))
+
+curry2 = curry(2)
+console.log(curry2(5)) 
+*/
+/*
+const obj = {
+	'j':1
+}
+console.log(obj.__proto__)
+*/
+
+/* 
+arr=[1,2,3,4,5]
+delete arr[3]
+console.log(arr)
+
+for(let item of arr){
+  console.log(item)
+}
+*/
+ 
+/* 
+arr.forEach(item=>{
+  console.log(item)
+}) 
+*/
+
+/*
+const checkequal = (v1,v2) =>{
+	
+  if(v1.length!=v2.length)
+  	return false;
+	for(let i=0;i<v1.length;i++){
+    if(v1[i]!==v2[i])
+      return false;
+  }
+  return true;
+}
+
+const memoize = function(func){
+	
+  let last=[],value;
+  let counter = 0
+    
+  return function(...args){
+  	counter++;
+  	if(checkequal(last,args)){
+    	return value;
+    }else{
+    	console.log("cache miss", counter)
+    	last = args
+      value = func(...args)
+      return value
+    }
+  }
+}
+
+const sum = (a,b) => a+b
+
+let sum1 = memoize(sum)
+
+sum1(1,2)
+sum1(1,2)
+sum1(1,3)
+
+*/
+/*
+let c1 = {
+	'a':'a'
+}
+let c2 = {
+	'b':'b',
+  __proto__: c1
+}
+console.log(c2)
+*/
+/*
+const curry = function(func){
+	
+  const x =  function(...args){
+  	
+    if(args.length >= func.length){
+    	return func(...args)
+    }else{
+      return function(...a2){
+      	return x(...args.concat(a2))
+      }
+    }
+    
+  }
+  return x
+  
+}
+
+const sum = (a,b,c) => a+b+c
+const sum2 = (a,b,c,d) =>a+b+c+d
+
+const newsum = curry(sum)
+const newsum2 = curry(sum2)
+
+console.log(newsum(1)(2)(3))
+console.log(newsum(1,5)(3))
+console.log(newsum(1)(2,7))
+
+
+console.log(newsum2(1)(1)(2)(3))
+console.log(newsum2(2,1,5)(3))
+console.log(newsum2(1)(2,3,7))
+
+*/
+
+/*
+let arr = [{x:1},{x:2},{x:3},{x:4},{x:5}]
+
+console.log(arr)
+console.log(arr.copyWithin(0,1,2))
+for(let x of arr){
+	console.log(x)
+}
+*/
+
+/*
+console.log(arr)
+console.log(arr.copyWithin(0,2))
+
+
+const reduceMap = ((acc,item)=>{
+  acc.push(func(item))
+  return acc
+},[])
+
+const reduceEvery = ((acc,item)=>{
+  acc = acc && func(item)
+  return acc
+},true)
+
+ */
+
+/*
+user = {
+	'x':1
+}
+
+function delay(ms) {
+ // console.log(this)
+  return new Promise((resolve, reject) => {
+ 	 //console.log(this)
+    setTimeout(() => resolve('hi'), ms)
+  })
+}
+
+delay(3000).then((item) => alert(`runs after 3 seconds ${item}`))
+delay.call(user,3000).then((item) => alert(`runs after 3 seconds ${item}`));
+
+*/
+
+//ask
+/*
+new Promise(function(resolve, reject) {
+	
+  setTimeout(() => {
+    console.log('my man')
+  }, 1000);
+  resolve(1)
+})
+.then( item => console.log("asdfsa"))
+.catch(alert);
+*/
+
+/*
+let urls = [
+	'https://api.github.com/users/iliakan',
+  'https://api.github.com/users/remy',
+
+];
+
+Promise.all(urls.map( item => fetch(item)))
+	.then(results=>{
+  	results.forEach(item=>{
+    	console.log(item)
+    	if(item.status == 200){
+      	console.log(item.status)
+      }else{
+      	console.log('aaa')
+      	//console.log(item.value.status)
+      }
+    })
+  })
+  .catch(alert)
+*/
+
+/*
+function promisify(f,m = false){
+  return function(...args){
+    return new Promise((resolve,reject)=>{
+       function callback(err,...res){
+       	if(err)
+        	reject(err)
+        else
+        	resolve(m?res:res[0]) 
+       }
+      args.push(callback)
+      f.call(this,...args)
+    })
+  }
+}
+*/
+/*
+class Thenable {
+  constructor(num) {
+    this.num = num;
+  }
+  then(resolve, reject) {
+    console.log(this)
+    alert(resolve);
+    // resolve with this.num*2 after 1000ms
+    setTimeout(() => resolve(this.num *= 2), 1000); // (*)
+  }
+}
+
+async function f() {
+  // waits for 1 second, then result becomes 2
+  let result = await new Thenable(1);
+  console.log(typeof result)
+  alert(result);
+}
+
+f();
+*/
+/*
+let arr = [{x:1},{y:2},{z:3},{b:1},{a:1}]
+console.log(arr.copyWithin(0,1,3))
+console.log(arr[2]===arr[1])
+
+*/
+
+
+function fff(reject){
+	reject('x')
+}
+
+ new Promise((resolve,reject)=>{
+  	
+    //console.log(1)
+    //resolve(1)
+    //setTimeout(()=>resolve('rt'),1000)
+    (function(){
+    
+    })()
+    //resolve('hihi')
+    
+    /*
+    setTimeout(function(){
+    	(function(){
+      	fff(reject)
+      })()
+    },1000)
+    */
+    
+    //setTimeout(()=>{reject('a')},500)
+   
+    //setTimeout(()=>resolve(1),2000)
+    //resolve(1)
+    //throw new Error('ad')
+  
+})
+    .then( item => console.log('then1',item))
+	  .catch(err => console.log('catch',err))
+	  .finally(console.log('finally'))
+	 
